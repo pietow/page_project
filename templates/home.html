@@ -1,1 +1,30 @@
-<h1>Homepage again</h1>
+{% extends "base.html" %}
+
+{% block content_name %}
+<h1>{{ title }}</h1>
+<p>Today's date {{ today }}</p>
+<p>Numbers: {{numbers }}</p>
+<h2>{{ numbers.0 }}</h2>
+<h2>{{ dic.one }}</h2>
+
+
+<p>{{ 3|add:"2" }}</p>
+<p>Numbers: {{numbers|add:numbers }}</p>
+<p>{{ "HELLO"|lower }}</p>
+<p>{{today|date:"l d M Y"}}</p>
+
+<ul>
+    {% for number in numbers %}
+    <li>
+        {% if number == 1 %}
+            The number is one.
+        {% elif number == 2 %}
+            The number is two.
+        {% else %}
+            The number is something else
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+
+{% endblock  %}
