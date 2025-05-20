@@ -20,13 +20,18 @@ from datetime import datetime
     # return json_response
 
 def home_page_view(request):
+    print(request.GET) # http://127.0.0.1:8000/?key=val
     context = {
         'title': 'Welcome',
         'today': datetime.now(),
         'numbers': [1, 2, 3],
         'dic': {"one": 1, "two":2},
     }
-    return render(request, 'home.html', context)
+    # set_cookie('my_cookie', 'cookie_value')
+    res = render(request, 'home.html', context)
+    res.set_cookie('my_cookie', 'cookie_value')
+    print(res)
+    return res
 
 # Option 2: class based
 class HomePageView(View):
@@ -37,5 +42,15 @@ class HomePageView(View):
 class HomePageView2(TemplateView):
     template_name = "home.html"
 
-class AboutPageView(TemplateView):
+
+from django.http import HttpResponseForbidden
+
+class ActiveUserRequiredMixin:
+    def dispatch(self, request, *args, **kwargs):
+        if request.COOKIES.get('my_cookie') == 'cookie_value':
+            return super().dispatch(request, *args, **kwargs) # triggers the dispatch from TemplateView, 
+                                                                # because TemplateView comes after the Mixin in the MRO
+        return HttpResponseForbidden('You are not allowed') 
+
+class AboutPageView(ActiveUserRequiredMixin, TemplateView):
     template_name = "about.html"
